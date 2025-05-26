@@ -14,6 +14,7 @@ fn merge_tailwind_classes(args: &[Value]) -> Result<RString, Error> {
 
     // ---------- 2. collect class tokens ------------------------------------
     let mut tokens = Vec::<String>::new();
+    let is_string_input = matches!(args[0].clone().try_convert::<RString>(), Ok(_));
     match args[0].clone().try_convert::<RString>() {
         Ok(rstr) => tokens.extend(rstr.to_string()?.split_whitespace().map(str::to_owned)),
         Err(_) => {
@@ -22,6 +23,24 @@ fn merge_tailwind_classes(args: &[Value]) -> Result<RString, Error> {
                 let s: RString = v?.try_convert()?;
                 tokens.push(s.to_string()?);
             }
+        }
+    }
+
+    // Early returns for simple cases
+    if is_string_input {
+        let rstr: RString = args[0].clone().try_convert()?;
+        let s = rstr.to_string()?;
+        if !s.contains(' ') {
+            // Single class string, return as-is
+            return Ok(RString::new(&s));
+        }
+    } else {
+        // Array input
+        if tokens.is_empty() {
+            return Ok(RString::new(""));
+        }
+        if tokens.len() == 1 {
+            return Ok(RString::new(&tokens[0]));
         }
     }
 
