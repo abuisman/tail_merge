@@ -18,4 +18,10 @@ class TestTailMerge < Minitest::Test
 
     assert_equal expected, TailMerge.merge("px-2 py-1 bg-red hover:bg-dark-red p-3 bg-[#B91C1C]")
   end
+
+  def test_prefixes_classes
+    expected = "tw-bg-green-200"
+
+    assert_equal expected, TailMerge.merge("tw-bg-red-200 tw-bg-green-200", prefix: "tw")
+  end
 end
