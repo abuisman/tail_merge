@@ -1,19 +1,19 @@
 # TailMerge
 
-TailMerge is a super fast utility library to merge Tailwind CSS classes without conflicts.
+TailMerge is a super-fast utility library to merge Tailwind CSS classes without conflicts.
 
 ```ruby
 TailMerge.merge %w[px-2 py-1 bg-red hover:bg-dark-red p-3 bg-[#B91C1C]]
 => "hover:bg-dark-red p-3 bg-[#B91C1C]"
 ```
 
-Classes on the right will override classes on the left.
+Classes that appear later in the list override earlier ones.
 
-TailMerge wraps the Rust library [rustui_merge](https://docs.rs/rustui_merge/latest/rustui_merge/) so that it can be used in Ruby. This makes it a lot faster than combining classes in Ruby.
+By leveraging the Rust crate [rustui_merge](https://docs.rs/rustui_merge/latest/rustui_merge/), TailMerge merges classes significantly faster than pure Ruby alternatives.
 
 ## Purpose
 
-When you use Tailwindcss to style components, you will probably run into the situation where you want to adjust the styling of component in a specific situation.
+When you use Tailwind CSS to style components, you'll often want to adjust the styling of a component in certain situations.
 
 An example:
 
@@ -24,7 +24,7 @@ class Well < ApplicationComponent
   end
 
   def call
-    tag.div class: default_classes + @classes
+    tag.div class: default_classes + @classes do
       content
     end
   end
@@ -61,7 +61,7 @@ class Well < ApplicationComponent
   end
 
   def call
-    tag.div class: TailMerge.merge(default_classes + @classes)
+    tag.div class: TailMerge.merge(default_classes + @classes) do
       content
     end
   end
@@ -86,11 +86,7 @@ Run `bundle install` to install the gem.
 
 ## Usage
 
-You can pass a string or an array of strings to the `merge` method.
-
-Whatever you pass last will override whatever you pass first.
-
-A string is returned for easy use in ERB.
+You can pass either a string or an array of strings to the merge method. Values passed later override previous ones. The result is always a string, ready for use in ERB templates.
 
 ```ruby
 TailMerge.merge %w[px-2 py-1 bg-red hover:bg-dark-red p-3 bg-[#B91C1C]]
@@ -106,6 +102,8 @@ TailMerge.merge "px-2 py-1 bg-red hover:bg-dark-red p-3 bg-[#B91C1C]"
 
 You can create an instance of TailMerge and call `merge` on it instead of on the `TailMerge` class. This will cache the results of the merge.
 
+This is useful in cases where you need to merge the same classes repeatedly, such as when rendering a list of the same component.
+
 ```ruby
 tail_merge_instance = TailMerge.new
 tail_merge_instance.merge %w[px-2 py-1 bg-red hover:bg-dark-red p-3 bg-[#B91C1C]]
@@ -120,13 +118,13 @@ tail_merge_instance.merge "px-2 py-1 bg-red hover:bg-dark-red p-3 bg-[#B91C1C]"
 => "hover:bg-dark-red p-3 bg-[#B91C1C]" # Read from cache, much faster!
 ```
 
-This caching technique was inspired by [[Tailwind Merge](https://github.com/dcastil/tailwind-merge)](https://github.com/gjtorikian/tailwind_merge).
+This caching technique was inspired by [Tailwind Merge](https://github.com/dcastil/tailwind-merge).
 
 ## Benchmark
 
-So how fast/much faster is TailMerge?
+So how fast is TailMerge?
 
-I've benchmarked TailMerge with an instance (cached) and without an instance against Tailwind Merge with (cached) and without a merger instance, and these are the results:
+I've benchmarked TailMerge with and without caching, and compared it to Tailwind Merge (also with and without caching). Here are the results:
 
 ```
                                                   user     system      total        real
@@ -136,14 +134,18 @@ Ruby: TailwindMerge each time (all samples): 51.488919   0.225130  51.714049 ( 5
 Ruby:Cached TailwindMerge (all samples):      0.019882   0.000166   0.020048 (  0.020051)
 ```
 
-As you can see TailMerge is much faster using pure Ruby to merge classes.
+As you can see, TailMerge is much faster than using pure Ruby to merge classes.
 
 The benchmark loops through an array of strings and arrays and merges them 1000 times.
 
 The difference between the cached runs, obviously, is much smaller as we are basically benchmarking the cache lookup and not the actual merge.
 
-In reality we will not deal with 1000 merges to be done per page and I suspect you'd be much closer to the non-cached runs.
+In reality, you will not need to perform 1000 merges per page, and I suspect you'll be much closer to the non-cached runs.
 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/abuisman/tail_merge . Merging will be done at my own pace and discretion.
+
+## License
+
+This gem is available as open source under under the MIT License.
