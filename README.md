@@ -130,10 +130,10 @@ I've benchmarked TailMerge with an instance (cached) and without an instance aga
 
 ```
                                                   user     system      total        real
-Rust: TailMerge.merge (all samples):          0.216178   0.001744   0.217922 (  0.219441)
-Rust: Cached TailMerge.merge (all samples):   0.005465   0.000092   0.005557 (  0.005581)
-Ruby: TailwindMerge each time (all samples): 50.391383   0.494058  50.885441 ( 52.272354)
-Ruby:Cached TailwindMerge (all samples):      0.011672   0.000140   0.011812 (  0.011813)
+Rust: TailMerge.merge (all samples):          0.371744   0.019642   0.391386 (  0.391821)
+Rust: Cached TailMerge.merge (all samples):   0.012976   0.000580   0.013556 (  0.013560)
+Ruby: TailwindMerge each time (all samples): 51.488919   0.225130  51.714049 ( 51.883713)
+Ruby:Cached TailwindMerge (all samples):      0.019882   0.000166   0.020048 (  0.020051)
 ```
 
 As you can see TailMerge is much faster using pure Ruby to merge classes.

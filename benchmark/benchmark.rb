@@ -56,9 +56,6 @@ cached_merger = TailwindMerge::Merger.new
 
 tail_merge_instance = TailMerge.new
 
-# Normalize all samples to strings
-normalized_samples = samples.map { |classes| classes.is_a?(Array) ? classes.join(' ') : classes }
-
 puts "Benchmarking class merging strategies (whole set)..."
 puts "-" * 50
 puts
@@ -66,7 +63,7 @@ puts
 Benchmark.bm(30) do |x|
   x.report("Rust: TailMerge.merge (all samples):") do
     1000.times do
-      normalized_samples.each do |classes|
+      samples.each do |classes|
         TailMerge.merge(classes)
       end
     end
@@ -74,7 +71,7 @@ Benchmark.bm(30) do |x|
 
   x.report("Rust: Cached TailMerge.merge (all samples):") do
     1000.times do
-      normalized_samples.each do |classes|
+      samples.each do |classes|
         tail_merge_instance.merge(classes)
       end
     end
@@ -82,7 +79,7 @@ Benchmark.bm(30) do |x|
 
   x.report("Ruby: TailwindMerge each time (all samples):") do
     1000.times do
-      normalized_samples.each do |classes|
+      samples.each do |classes|
         TailwindMerge::Merger.new.merge(classes)
       end
     end
@@ -90,7 +87,7 @@ Benchmark.bm(30) do |x|
 
   x.report("Ruby:Cached TailwindMerge (all samples):") do
     1000.times do
-      normalized_samples.each do |classes|
+      samples.each do |classes|
         cached_merger.merge(classes)
       end
     end
