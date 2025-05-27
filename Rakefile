@@ -15,7 +15,7 @@ task build: :compile
 
 GEMSPEC = Gem::Specification.load("tail_merge.gemspec")
 
-RbSys::ExtensionTask.new("tail_merge", GEMSPEC) do |ext|
+RbSys::ExtensionTask.new("merger", GEMSPEC) do |ext|
   ext.lib_dir = "lib/tail_merge"
 end
 
