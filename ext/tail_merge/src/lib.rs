@@ -14,6 +14,7 @@ fn merge_tailwind_classes(args: &[Value]) -> Result<RString, Error> {
 
     // ---------- 2. collect class tokens ------------------------------------
     let mut tokens = Vec::<String>::new();
+    let is_string_input = matches!(args[0].clone().try_convert::<RString>(), Ok(_));
     match args[0].clone().try_convert::<RString>() {
         Ok(rstr) => tokens.extend(rstr.to_string()?.split_whitespace().map(str::to_owned)),
         Err(_) => {
@@ -22,6 +23,24 @@ fn merge_tailwind_classes(args: &[Value]) -> Result<RString, Error> {
                 let s: RString = v?.try_convert()?;
                 tokens.push(s.to_string()?);
             }
+        }
+    }
+
+    // Early returns for simple cases
+    if is_string_input {
+        let rstr: RString = args[0].clone().try_convert()?;
+        let s = rstr.to_string()?;
+        if !s.contains(' ') {
+            // Single class string, return as-is
+            return Ok(RString::new(&s));
+        }
+    } else {
+        // Array input
+        if tokens.is_empty() {
+            return Ok(RString::new(""));
+        }
+        if tokens.len() == 1 {
+            return Ok(RString::new(&tokens[0]));
         }
     }
 
@@ -100,8 +119,10 @@ fn merge_tailwind_classes(args: &[Value]) -> Result<RString, Error> {
 
 #[magnus::init]
 fn init() -> Result<(), Error> {
-    let module = define_module("TailMerge")?;
-    // -1 = variable arity (positional + kw-hash)
-    module.define_singleton_method("merge", function!(merge_tailwind_classes, -1))?;
+    let ruby = Ruby::get().unwrap();
+    let tail_merge_class: magnus::RClass = ruby.class_object().const_get("TailMerge")?;
+    let merger_module = tail_merge_class.define_module("Merger")?;
+    // Assuming merge_tailwind_classes is your target function
+    merger_module.define_singleton_method("perform", function!(merge_tailwind_classes, -1))?;
     Ok(())
 }

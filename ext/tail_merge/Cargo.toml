@@ -1,11 +1,12 @@
 [package]
-name = "tail_merge"
+name = "merger"
 version = "0.1.0"
 edition = "2021"
 authors = ["Achilleas Buisman <accounts@abuisman.nl>"]
 publish = false
 
 [lib]
+name = "merger"
 crate-type = ["cdylib"]
 
 [dependencies]
