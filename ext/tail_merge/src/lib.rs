@@ -119,7 +119,9 @@ fn merge_tailwind_classes(args: &[Value]) -> Result<RString, Error> {
 
 #[magnus::init]
 fn init() -> Result<(), Error> {
-    let merger_module = define_module("Merger")?;
+    let ruby = Ruby::get().unwrap();
+    let tail_merge_class: magnus::RClass = ruby.class_object().const_get("TailMerge")?;
+    let merger_module = tail_merge_class.define_module("Merger")?;
     // Assuming merge_tailwind_classes is your target function
     merger_module.define_singleton_method("perform", function!(merge_tailwind_classes, -1))?;
     Ok(())
