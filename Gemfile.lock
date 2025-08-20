@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    tail_merge (0.4.0)
-      rb_sys (~> 0.9.91)
+    tail_merge (0.4.1)
+      rb_sys (~> 0.9.115)
 
 GEM
   remote: https://rubygems.org/
@@ -57,4 +57,4 @@ DEPENDENCIES
   tail_merge!
 
 BUNDLED WITH
-   2.6.3
+   2.5.23

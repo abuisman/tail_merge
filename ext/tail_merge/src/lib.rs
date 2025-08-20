@@ -1,5 +1,5 @@
 use magnus::{
-    define_module, function, prelude::*, Error, RArray, RHash, RString, Ruby, Value,
+    function, prelude::*, Error, RArray, RHash, RString, Ruby, Value,
 };
 use rustui_merge::merge::tw_merge;
 
@@ -14,13 +14,13 @@ fn merge_tailwind_classes(args: &[Value]) -> Result<RString, Error> {
 
     // ---------- 2. collect class tokens ------------------------------------
     let mut tokens = Vec::<String>::new();
-    let is_string_input = matches!(args[0].clone().try_convert::<RString>(), Ok(_));
-    match args[0].clone().try_convert::<RString>() {
+    let is_string_input = matches!(RString::try_convert(args[0].clone()), Ok(_));
+    match RString::try_convert(args[0].clone()) {
         Ok(rstr) => tokens.extend(rstr.to_string()?.split_whitespace().map(str::to_owned)),
         Err(_) => {
-            let rarray: RArray = args[0].try_convert()?;
-            for v in rarray.each() {
-                let s: RString = v?.try_convert()?;
+            let rarray: RArray = RArray::try_convert(args[0])?;
+            for v in rarray.into_iter() {
+                let s: RString = RString::try_convert(v)?;
                 tokens.push(s.to_string()?);
             }
         }
@@ -28,7 +28,7 @@ fn merge_tailwind_classes(args: &[Value]) -> Result<RString, Error> {
 
     // Early returns for simple cases
     if is_string_input {
-        let rstr: RString = args[0].clone().try_convert()?;
+        let rstr: RString = RString::try_convert(args[0].clone())?;
         let s = rstr.to_string()?;
         if !s.contains(' ') {
             // Single class string, return as-is
@@ -49,15 +49,15 @@ fn merge_tailwind_classes(args: &[Value]) -> Result<RString, Error> {
     let mut separator: Option<String> = None;
 
     if args.len() == 2 {
-        let rhash: RHash = args[1].try_convert()?;
+        let rhash: RHash = RHash::try_convert(args[1])?;
         let ruby = Ruby::get().unwrap();
 
         if let Some(v) = rhash.get(ruby.to_symbol("prefix")) {
-            let s: RString = v.try_convert()?;
+            let s: RString = RString::try_convert(v)?;
             prefix = Some(s.to_string()?);
         }
         if let Some(v) = rhash.get(ruby.to_symbol("separator")) {
-            let s: RString = v.try_convert()?;
+            let s: RString = RString::try_convert(v)?;
             separator = Some(s.to_string()?);
         }
     }
