@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    tail_merge (0.4.1)
+    tail_merge (0.4.2)
       rb_sys (~> 0.9.115)
 
 GEM
