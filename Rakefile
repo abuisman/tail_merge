@@ -46,7 +46,15 @@ end
 
 desc "Build native extension for a given platform (i.e. `rake 'native[x86_64-linux]'`)"
 task :native, [:platform] do |_t, platform:|
-  sh "bundle", "exec", "rb-sys-dock", "--platform", platform, "--build"
+  raise ArgumentError, "platform is required, e.g. rake 'native[x86_64-linux]'" if platform.nil? || platform.empty?
+
+  if platform.end_with?("-darwin")
+    # On macOS runners, prefer the native rake task (no Docker available)
+    sh "bundle", "exec", "rake", "native:#{platform}", "gem"
+  else
+    # For Linux/Windows, use Docker-based cross compilation
+    sh "bundle", "exec", "rb-sys-dock", "--platform", platform, "--build"
+  end
 end
 
 task default: %i[compile test rubocop]
