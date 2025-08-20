@@ -1,0 +1,69 @@
+name: Release Gem
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-linux-windows:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [x86_64-linux, x64-mingw-ucrt]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - name: Build native gem for ${{ matrix.platform }}
+        run: |
+          bundle exec rake "native[${{ matrix.platform }}]"
+      - name: Upload pkg artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pkg-${{ matrix.platform }}
+          path: pkg/*.gem
+
+  build-macos:
+    runs-on: macos-14
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - name: Build native gem for arm64-darwin
+        run: |
+          bundle exec rake "native[arm64-darwin]"
+      - name: Upload pkg artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pkg-arm64-darwin
+          path: pkg/*.gem
+
+  publish:
+    needs: [build-linux-windows, build-macos]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: pkg
+          merge-multiple: true
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+      - name: Publish to RubyGems via Trusted Publishing
+        uses: rubygems/release-gem@v1
+
