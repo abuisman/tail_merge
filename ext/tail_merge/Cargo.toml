@@ -10,5 +10,6 @@ name = "merger"
 crate-type = ["cdylib"]
 
 [dependencies]
-magnus = { version = "0.6.2" }
+magnus = "0.7.1"
 rustui_merge = "0.1.6"
+rb-sys = "0.9.115"
