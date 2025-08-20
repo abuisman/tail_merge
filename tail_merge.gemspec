@@ -13,6 +13,7 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://github.com/abuisman/tail_merge"
   spec.required_ruby_version = ">= 3.1.0"
   spec.required_rubygems_version = ">= 3.3.11"
+  spec.license = "MIT"
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
@@ -33,5 +34,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.extensions = ["ext/tail_merge/extconf.rb"]
 
-  spec.add_dependency "rb_sys", "~> 0.9.91"
+  spec.add_dependency "rb_sys", "~> 0.9.115"
 end
