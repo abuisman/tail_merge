@@ -65,13 +65,8 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
-      - name: Configure RubyGems credentials (Trusted Publishing)
-        uses: rubygems/configure-rubygems-credentials@v1
-      - name: Push all built gems
-        run: |
-          shopt -s nullglob
-          for f in pkg/*.gem; do
-            echo "Pushing $f"
-            gem push "$f"
-          done
+      - name: Publish to RubyGems via Trusted Publishing
+        uses: rubygems/release-gem@v1
+        with:
+          release-command: bash -lc 'shopt -s nullglob; for f in pkg/*.gem; do echo "Pushing $f"; gem push "$f"; done'
 
