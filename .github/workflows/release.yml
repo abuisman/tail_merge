@@ -68,6 +68,11 @@ jobs:
           bundler-cache: true
       - name: Configure RubyGems credentials (Trusted Publishing)
         uses: rubygems/configure-rubygems-credentials@v1.0.0
+      - name: Build generic gem (ruby platform)
+        run: |
+          gem build tail_merge.gemspec
+          mkdir -p pkg
+          mv tail_merge-*.gem pkg/
       - name: Push all built gems
         run: |
           shopt -s nullglob
