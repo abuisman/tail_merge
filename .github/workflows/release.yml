@@ -73,16 +73,16 @@ jobs:
           gem build tail_merge.gemspec
           mkdir -p pkg
           mv tail_merge-*.gem pkg/
-      - name: Read gem version
-        id: read_version
-        run: |
-          V=$(ruby -e 'v=File.read("lib/tail_merge/version.rb"); puts v[/VERSION\s*=\s*"([^"]+)"/,1]')
-          echo "version=$V" >> "$GITHUB_OUTPUT"
       - name: Push all built gems
         run: |
+          set -euo pipefail
+          VERSION=$(ruby -e 'v=File.read("lib/tail_merge/version.rb"); puts v[/VERSION\s*=\s*"([^"]+)"/,1]')
+          echo "Version to publish: ${VERSION}"
+          # Remove any stale gem artifacts for other versions
+          find pkg -maxdepth 1 -type f -name 'tail_merge-*.gem' ! -name "tail_merge-${VERSION}*.gem" -print -delete || true
+          echo "Artifacts to push:"
+          ls -la pkg
           shopt -s nullglob
-          VERSION=${{ steps.read_version.outputs.version }}
-          echo "Version to publish: $VERSION"
           for f in pkg/tail_merge-${VERSION}*.gem; do
             echo "Pushing $f"
             gem push "$f"
