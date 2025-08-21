@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "tail_merge/version"
-require_relative "tail_merge/merger"
+require "tail_merge/merger"
 
 # Main class for merging tailwind classes.
 class TailMerge
