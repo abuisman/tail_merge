@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [x86_64-linux, x64-mingw-ucrt]
+        platform: [x86_64-linux, aarch64-linux, x64-mingw-ucrt]
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1

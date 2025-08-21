@@ -50,7 +50,16 @@ task :native, [:platform] do |_t, platform:|
 
   if platform.end_with?("-darwin")
     # On macOS runners, prefer the native rake task (no Docker available)
-    sh "bundle", "exec", "rake", "native:#{platform}", "gem"
+    # Map generic arm64-darwin/x86_64-darwin to specific host suffix (e.g. arm64-darwin23)
+    require "rbconfig"
+    ruby_platform = RUBY_PLATFORM # e.g. "arm64-darwin23"
+    darwin_suffix = ruby_platform[/darwin\d+/, 0]
+    mapped = platform
+    if darwin_suffix && platform =~ /^(arm64|x86_64)-darwin$/
+      arch = platform.split("-").first
+      mapped = "#{arch}-#{darwin_suffix}"
+    end
+    sh "bundle", "exec", "rake", "native:#{mapped}", "gem"
   else
     # For Linux/Windows, use Docker-based cross compilation
     sh "bundle", "exec", "rb-sys-dock", "--platform", platform, "--build"
