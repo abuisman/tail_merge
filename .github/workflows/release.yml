@@ -83,8 +83,15 @@ jobs:
           echo "Artifacts to push:"
           ls -la pkg
           shopt -s nullglob
+          pushed=0; skipped=0
           for f in pkg/tail_merge-${VERSION}*.gem; do
             echo "Pushing $f"
-            gem push "$f"
+            if gem push "$f"; then
+              pushed=$((pushed+1))
+            else
+              echo "Skipping $f (push failed, likely already published)"
+              skipped=$((skipped+1))
+            fi
           done
+          echo "Publish complete. Pushed: $pushed, Skipped: $skipped"
 
