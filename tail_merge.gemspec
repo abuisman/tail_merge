@@ -34,5 +34,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.extensions = ["ext/tail_merge/extconf.rb"]
 
-  spec.add_dependency "rb_sys", "~> 0.9.115"
+  spec.add_dependency "rb_sys", "~> 0.9.106"
 end

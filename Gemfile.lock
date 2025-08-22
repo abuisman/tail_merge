@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    tail_merge (0.4.3)
-      rb_sys (~> 0.9.115)
+    tail_merge (0.4.4)
+      rb_sys (~> 0.9.106)
 
 GEM
   remote: https://rubygems.org/
