@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
 require_relative "tail_merge/version"
-require "tail_merge/merger"
+begin
+  require "tail_merge/merger"
+rescue LoadError
+  require "rbconfig"
+  major_minor = RbConfig::CONFIG["ruby_version"][/^\d+\.\d+/]
+  require "tail_merge/#{major_minor}/merger"
+end
 
 # Main class for merging tailwind classes.
 class TailMerge
