@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 class TailMerge
-  VERSION = "0.5.0.rc1"
+  VERSION = "0.5.0"
 end
