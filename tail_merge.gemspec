@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary = "Merge Tailwind CSS classes"
   spec.description = "Merge Tailwind CSS classes"
   spec.homepage = "https://github.com/abuisman/tail_merge"
-  spec.required_ruby_version = ">= 3.1.0"
+  spec.required_ruby_version = ">= 3.2.0"
   spec.required_rubygems_version = ">= 3.3.11"
   spec.license = "MIT"
 

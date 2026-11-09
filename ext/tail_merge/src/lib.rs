@@ -1,13 +1,13 @@
 use magnus::{
     function, prelude::*, Error, RArray, RHash, RString, Ruby, Value,
 };
-use rustui_merge::merge::tw_merge;
+use tw_merge::merge::merge_classes as tw_merge;
 
-fn merge_tailwind_classes(args: &[Value]) -> Result<RString, Error> {
+fn merge_tailwind_classes(ruby: &Ruby, args: &[Value]) -> Result<RString, Error> {
     // ---------- 1. arity ----------------------------------------------------
     if args.is_empty() || args.len() > 2 {
         return Err(Error::new(
-            magnus::exception::arg_error(),
+            ruby.exception_arg_error(),
             "wrong number of arguments (expected 1 or 2)",
         ));
     }
@@ -32,15 +32,15 @@ fn merge_tailwind_classes(args: &[Value]) -> Result<RString, Error> {
         let s = rstr.to_string()?;
         if !s.contains(' ') {
             // Single class string, return as-is
-            return Ok(RString::new(&s));
+            return Ok(ruby.str_new(&s));
         }
     } else {
         // Array input
         if tokens.is_empty() {
-            return Ok(RString::new(""));
+            return Ok(ruby.str_new(""));
         }
         if tokens.len() == 1 {
-            return Ok(RString::new(&tokens[0]));
+            return Ok(ruby.str_new(&tokens[0]));
         }
     }
 
@@ -50,7 +50,6 @@ fn merge_tailwind_classes(args: &[Value]) -> Result<RString, Error> {
 
     if args.len() == 2 {
         let rhash: RHash = RHash::try_convert(args[1])?;
-        let ruby = Ruby::get().unwrap();
 
         if let Some(v) = rhash.get(ruby.to_symbol("prefix")) {
             let s: RString = RString::try_convert(v)?;
@@ -114,12 +113,11 @@ fn merge_tailwind_classes(args: &[Value]) -> Result<RString, Error> {
         tw_merge(tokens.join(" "))
     };
 
-    Ok(RString::new(&merged))
+    Ok(ruby.str_new(&merged))
 }
 
 #[magnus::init]
-fn init() -> Result<(), Error> {
-    let ruby = Ruby::get().unwrap();
+fn init(ruby: &Ruby) -> Result<(), Error> {
     let tail_merge_class: magnus::RClass = ruby.class_object().const_get("TailMerge")?;
     let merger_module = tail_merge_class.define_module("Merger")?;
     // Assuming merge_tailwind_classes is your target function

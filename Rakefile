@@ -18,9 +18,9 @@ task build: :compile
 
 GEMSPEC = Gem::Specification.load("tail_merge.gemspec")
 
-# Limit cross-compiled Ruby versions to those supported by this gem and dependencies
-# Format matches rake-compiler's RUBY_CC_VERSION (colon-separated list)
-ENV["RUBY_CC_VERSION"] ||= "3.1.6:3.2.6:3.3.7:3.4.1"
+# Cross-compile for every Ruby in the rake-compiler-dock image that the gemspec supports
+require "rake_compiler_dock"
+ENV["RUBY_CC_VERSION"] ||= RakeCompilerDock.ruby_cc_version(GEMSPEC.required_ruby_version.to_s)
 
 PLATFORMS = %w[
   aarch64-linux-gnu

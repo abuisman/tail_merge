@@ -75,4 +75,10 @@ class TestTailMerge < Minitest::Test
     instance = TailMerge.new
     assert_equal expected, instance.merge("")
   end
+
+  def test_merges_tailwind_v4_classes
+    assert_equal "outline-hidden", TailMerge.merge("outline-none outline-hidden")
+    assert_equal "bg-gradient-to-l", TailMerge.merge("bg-linear-to-r bg-gradient-to-l")
+    assert_equal "duration-[2s]", TailMerge.merge("duration-100 duration-[2s]")
+  end
 end

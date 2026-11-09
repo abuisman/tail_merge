@@ -9,7 +9,7 @@ TailMerge.merge %w[px-2 py-1 bg-red hover:bg-dark-red p-3 bg-[#B91C1C]]
 
 Classes that appear later in the list override earlier ones.
 
-By leveraging the Rust crate [rustui_merge](https://docs.rs/rustui_merge/latest/rustui_merge/), TailMerge merges classes significantly faster than pure Ruby alternatives.
+By leveraging the Rust crate [tw_merge](https://docs.rs/tw_merge/latest/tw_merge/), TailMerge merges classes significantly faster than pure Ruby alternatives.
 
 ## Purpose
 
