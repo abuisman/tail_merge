@@ -48,22 +48,7 @@ desc "Build native extension for a given platform (i.e. `rake 'native[x86_64-lin
 task :native, [:platform] do |_t, platform:|
   raise ArgumentError, "platform is required, e.g. rake 'native[x86_64-linux]'" if platform.nil? || platform.empty?
 
-  if platform.end_with?("-darwin")
-    # On macOS runners, prefer the native rake task (no Docker available)
-    # Map generic arm64-darwin/x86_64-darwin to specific host suffix (e.g. arm64-darwin23)
-    require "rbconfig"
-    ruby_platform = RUBY_PLATFORM # e.g. "arm64-darwin23"
-    darwin_suffix = ruby_platform[/darwin\d+/, 0]
-    mapped = platform
-    if darwin_suffix && platform =~ /^(arm64|x86_64)-darwin$/
-      arch = platform.split("-").first
-      mapped = "#{arch}-#{darwin_suffix}"
-    end
-    sh "bundle", "exec", "rake", "native:#{mapped}", "gem"
-  else
-    # For Linux/Windows, use Docker-based cross compilation
-    sh "bundle", "exec", "rb-sys-dock", "--platform", platform, "--build"
-  end
+  sh "bundle", "exec", "rb-sys-dock", "--platform", platform, "--build"
 end
 
 task default: %i[compile test rubocop]

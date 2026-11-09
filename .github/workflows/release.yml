@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  build-linux-windows:
+  build:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [x86_64-linux, aarch64-linux, x64-mingw-ucrt]
+        platform: [x86_64-linux, aarch64-linux, x64-mingw-ucrt, arm64-darwin]
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -29,28 +29,8 @@ jobs:
           name: pkg-${{ matrix.platform }}
           path: pkg/*.gem
 
-  build-macos:
-    runs-on: macos-14
-    permissions:
-      id-token: write
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.3'
-          bundler-cache: true
-      - name: Build native gem for arm64-darwin
-        run: |
-          bundle exec rake "native[arm64-darwin]"
-      - name: Upload pkg artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: pkg-arm64-darwin
-          path: pkg/*.gem
-
   publish:
-    needs: [build-linux-windows, build-macos]
+    needs: [build]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
